@@ -53,7 +53,7 @@ function skor2() {
   return skor++;
 }
 
-
+console.log("skorTest 2",skor);
 /* Görev 2: takimSkoru() 
 Aşağıdaki takimSkoru() fonksiyonununda aşağıdakileri yapınız:
   1. Bir çeyrekte bir takımın ürettiği skoru rastgele(random) elde eden bir sonuc dönünüz(return)
@@ -66,9 +66,14 @@ Not: Bu fonskiyon, aşağıdaki diğer görevler için de bir callback fonksiyon
 
 function takimSkoru(/*Kodunuzu buraya yazınız*/){
     /*Kodunuzu buraya yazınız*/
-}
+    return Math.floor(Math.random()*15+10)+1;
+  }
 
-
+  function takimSkoruMini(/*Kodunuzu buraya yazınız*/){
+    /*Kodunuzu buraya yazınız*/
+    return Math.floor(Math.random()*2);
+  }
+console.log(takimSkoru());
 
 
 /* Görev 3: macSonucu() 
@@ -86,10 +91,26 @@ Aşağıdaki macSonucu() fonksiyonununda aşağıdakileri yapınız:
 }
 */ 
 
-function macSonucu(/*Kodunuzu buraya yazınız*/){
-  /*Kodunuzu buraya yazınız*/
+function macSonucu(cb,q){
+  
+  let away=0;
+  let home=0;
+
+  for (let i = 0; i < q; i++) {
+    away=away + cb();
+    home=home + cb();
+    
+  }
+
+  return{
+    EvSahibi:home,
+    KonukTakim:away,
+  };
+
 }
 
+console.log(macSonucu(takimSkoru,4));
+console.log(macSonucu(takimSkoru,3));
 
 
 
@@ -109,8 +130,14 @@ Aşağıdaki periyotSkoru() fonksiyonununda aşağıdakileri yapınız:
   */
 
 
-function periyotSkoru(/*Kodunuzu buraya yazınız*/) {
-  /*Kodunuzu buraya yazınız*/
+function periyotSkoru(cb) {
+  let home = cb();
+  let away = cb();
+
+  return{
+    EvSahibi:home,
+    KonukTakim:away,
+  };
 
 }
 
@@ -146,11 +173,41 @@ MAÇ UZAR ise skorTabelasi(periyotSkoru,takimSkoru,4)
 ] */
 // NOTE: Bununla ilgili bir test yoktur. Eğer logladığınız sonuçlar yukarıdakine benziyor ise tmamlandı sayabilirsiniz.
 
-function skorTabelasi(/*Kodunuzu buraya yazınız*/) {
-  /*Kodunuzu buraya yazınız*/
+function skorTabelasi(cbPeriod,cbScore,q) {
+  let home=0;
+  let away=0;
+
+  let scoreBoard=[];
+  for (let i = 0; i < q; i++) {
+    const periodResult=cbPeriod(cbScore);
+    console.log("periodResult",i,periodResult);
+
+    home=home +periodResult.EvSahibi;
+    away=away +periodResult.KonukTakim;
+    console.log("Total",home,away);
+    const periodResultString=`${i+1}. Periyot: Ev Sahibi ${periodResult.EvSahibi} - Konuk Takım ${periodResult.KonukTakim}`;
+    scoreBoard.push(periodResultString);
+    
+  }
+
+ let extension=0;
+ while(home===away)
+ {
+  extension++;
+  const periodResult =cbPeriod(cbScore);
+  home+=periodResult.EvSahibi;
+  away=away+periodResult.KonukTakim;
+  const periodResultString=`${extension}. uzatma : Ev Sahibi ${periodResult.EvSahibi} - Konuk Takım ${periodResult.KonukTakim}`;
+  scoreBoard.push(periodResultString);
+ }
+
+const resulString = "Maç Sonucu: Ev Sahibi " + home + "- Konuk Takım" + away;
+scoreBoard.push(resulString);
+return scoreBoard;
+
 }
 
-
+console.log(periyotSkoru,takimSkoru);
 
 
 /* Aşağıdaki satırları lütfen değiştirmeyiniz*/
